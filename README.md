@@ -33,7 +33,7 @@ For the backend, we are using Google Cloud Functions coupled with MongoDB Atlas.
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/my-productivity-app.git
+    git clone https://github.com/kumachistudio/copilot-competition.git
     cd my-productivity-app
     ```
 
