@@ -13,44 +13,7 @@ Welcome to the New Beginnings Productivity Tool! This application is inspired by
 - **API Integration**: Fetch additional data like motivational quotes and weather updates.
 
 ## Project Structure
-my-productivity-app/
-├── components/
-│   ├── Auth/
-│   │   ├── LoginForm.tsx
-│   │   ├── SignupForm.tsx
-│   ├── Dashboard/
-│   │   ├── DashboardOverview.tsx
-│   │   ├── GoalCard.tsx
-│   │   ├── HabitCard.tsx
-│   ├── Journal/
-│   │   ├── JournalEntry.tsx
-│   │   ├── JournalList.tsx
-│   ├── Notifications/
-│   │   ├── NotificationList.tsx
-│   │   ├── NotificationItem.tsx
-├── pages/
-│   ├── api/
-│   │   ├── auth.ts
-│   │   ├── goals.ts
-│   │   ├── habits.ts
-│   ├── dashboard.tsx
-│   ├── index.tsx
-│   ├── journal.tsx
-│   ├── login.tsx
-│   ├── signup.tsx
-├── public/
-├── styles/
-│   ├── globals.css
-│   ├── Dashboard.module.css
-│   ├── Journal.module.css
-├── utils/
-│   ├── api.ts
-│   ├── auth.ts
-│   ├── notifications.ts
-├── README.md
-├── TODO.md
-├── package.json
-├── tsconfig.json
+See the project structure in [structure.md](./structure.md)
 
 ## Backend
 
