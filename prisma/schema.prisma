@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Goal {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  category    String
+  startDate   DateTime
+  endDate     DateTime
+  priority    String
+  status      String
+  milestones  Milestone[]
+  progress    Int
+  reminders   Reminder[]
+  visibility  String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  attachments Attachment[]
+  tags        Tag[]
+}
+
+model Attachment {
+  id       Int    @id @default(autoincrement())
+  url      String
+  goalId   Int
+  goal     Goal   @relation(fields: [goalId], references: [id])
+}
+
+model Tag {
+  id     Int    @id @default(autoincrement())
+  name   String
+  goalId Int
+  goal   Goal   @relation(fields: [goalId], references: [id])
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  goals    Goal[]
+}
+
+model Reminder {
+  id       Int      @id @default(autoincrement())
+  time     DateTime
+  goalId   Int
+  goal     Goal     @relation(fields: [goalId], references: [id])
+}
+
+model Milestone {
+  id       Int      @id @default(autoincrement())
+  name     String
+  goalId   Int
+  goal     Goal     @relation(fields: [goalId], references: [id])
+}
