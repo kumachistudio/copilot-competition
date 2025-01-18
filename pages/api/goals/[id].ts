@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma"; // Adjust the import path as necessary
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
     return res.status(401).json({ message: "Not authenticated" });
@@ -13,35 +14,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { id } = req.query;
 
   if (req.method === "PUT") {
-    const { title, description, category, startDate, endDate, priority, status, milestones, progress, reminders, tags, attachments, visibility } = req.body;
+    const { title, description, startDate, endDate, priority, status } = req.body;
+
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
 
     try {
       const goal = await prisma.goal.update({
-        where: { id: Number(id), userId },
+        where: { id: Number(id), userId: Number(userId) },
         data: {
           title,
           description,
-          category,
-          startDate: new Date(startDate),
-          endDate: new Date(endDate),
+          startDate: parsedStartDate,
+          endDate: parsedEndDate,
           priority,
-          status,
-          progress,
-          visibility,
-          milestones: {
-            deleteMany: {}, // Clear existing milestones
-            create: milestones.map((milestone: string) => ({ name: milestone })),
-          },
-          reminders: {
-            deleteMany: {}, // Clear existing reminders
-            create: reminders.map((reminder: string) => ({ time: new Date(reminder) })),
-          },
-          tags: {
-            set: tags.map((tag: string) => ({ name: tag })),
-          },
-          attachments: {
-            set: attachments.map((attachment: string) => ({ url: attachment })),
-          },
+          status
         },
       });
 
@@ -52,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === "DELETE") {
     try {
       await prisma.goal.delete({
-        where: { id: Number(id), userId },
+        where: { id: Number(id), userId: Number(userId) },
       });
 
       res.status(204).end();

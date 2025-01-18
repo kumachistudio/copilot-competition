@@ -1,4 +1,3 @@
-import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma"; // Adjust the import path as necessary
@@ -60,5 +59,3 @@ export const authOptions = {
     error: "/auth/error",
   },
 };
-
-export default NextAuth(authOptions);

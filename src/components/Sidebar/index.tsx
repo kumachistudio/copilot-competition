@@ -114,8 +114,8 @@ const menuGroups = [
             />
           </svg>
         ),
-        label: "Habbit Tracker",
-        route: "/habbit-tracker",
+        label: "Habit Tracker",
+        route: "/habit-tracker",
       },
       {
         icon: (

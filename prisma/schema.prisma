@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Goal {
-  id          Int          @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   category    String
@@ -16,23 +16,23 @@ model Goal {
   endDate     DateTime
   priority    String
   status      String
-  milestones  Milestone[]
-  progress    Int
-  reminders   Reminder[]
   visibility  String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   userId      Int
-  user        User         @relation(fields: [userId], references: [id])
-  attachments Attachment[]
-  tags        Tag[]
+  user        User     @relation(fields: [userId], references: [id])
+
+  Attachment Attachment[]
+  Tag        Tag[]
+  Reminder   Reminder[]
+  Milestone  Milestone[]
 }
 
 model Attachment {
-  id       Int    @id @default(autoincrement())
-  url      String
-  goalId   Int
-  goal     Goal   @relation(fields: [goalId], references: [id])
+  id     Int    @id @default(autoincrement())
+  url    String
+  goalId Int
+  goal   Goal   @relation(fields: [goalId], references: [id])
 }
 
 model Tag {
@@ -51,15 +51,15 @@ model User {
 }
 
 model Reminder {
-  id       Int      @id @default(autoincrement())
-  time     DateTime
-  goalId   Int
-  goal     Goal     @relation(fields: [goalId], references: [id])
+  id     Int      @id @default(autoincrement())
+  time   DateTime
+  goalId Int
+  goal   Goal     @relation(fields: [goalId], references: [id])
 }
 
 model Milestone {
-  id       Int      @id @default(autoincrement())
-  name     String
-  goalId   Int
-  goal     Goal     @relation(fields: [goalId], references: [id])
+  id     Int    @id @default(autoincrement())
+  name   String
+  goalId Int
+  goal   Goal   @relation(fields: [goalId], references: [id])
 }
