@@ -1,7 +1,12 @@
 "use client";
 import React, { useState } from "react";
 
-const RemindersForm: React.FC = () => {
+interface RemindersFormProps {
+  goalId: string;
+  onRemindersCreated: () => void;
+}
+
+const RemindersForm: React.FC<RemindersFormProps> = ({ goalId, onRemindersCreated }) => {
   const [reminder, setReminder] = useState({
     name: "",
     time: "",
@@ -26,7 +31,7 @@ const RemindersForm: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(reminder),
+        body: JSON.stringify({ ...reminder, goalId }),
       });
 
       if (!response.ok) {
@@ -35,6 +40,7 @@ const RemindersForm: React.FC = () => {
 
       const data = await response.json();
       console.log('Reminder created:', data);
+      onRemindersCreated();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

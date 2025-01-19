@@ -1,7 +1,12 @@
 "use client";
 import React, { useState } from "react";
 
-const MilestonesForm: React.FC = () => {
+interface MilestonesFormProps {
+  goalId: string;
+  onMilestonesCreated: () => void;
+}
+
+const MilestonesForm: React.FC<MilestonesFormProps> = ({ goalId, onMilestonesCreated }) => {
   const [milestones, setMilestones] = useState<string[]>([""]);
   
   const [loading, setLoading] = useState(false);
@@ -30,7 +35,7 @@ const MilestonesForm: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ milestones }),
+        body: JSON.stringify({ goalId, milestones }),
       });
 
       if (!response.ok) {
@@ -39,6 +44,7 @@ const MilestonesForm: React.FC = () => {
 
       const data = await response.json();
       console.log('Milestones saved:', data);
+      onMilestonesCreated();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

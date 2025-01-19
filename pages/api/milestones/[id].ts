@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/authOptions';
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
@@ -18,25 +19,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      const tag = await prisma.tag.findUnique({
+      const milestone = await prisma.milestone.findUnique({
         where: { id: parseInt(id) },
       });
 
-      if (tag) {
-        return res.status(200).json({ tag });
+      if (milestone) {
+        return res.status(200).json({ milestone });
       } else {
-        return res.status(404).json({ error: 'Tag not found' });
+        return res.status(404).json({ error: 'Milestone not found' });
       }
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
   } else if (req.method === 'DELETE') {
     try {
-      const deletedTag = await prisma.tag.delete({
+      const deletedMilestone = await prisma.milestone.delete({
         where: { id: parseInt(id) },
       });
 
-      return res.status(200).json({ message: 'Tag deleted successfully', deletedTag });
+      return res.status(200).json({ message: 'Milestone deleted successfully', deletedMilestone });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

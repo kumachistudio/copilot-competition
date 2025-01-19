@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 
 interface GoalFormProps {
-  onGoalCreated: () => void;
+  onGoalCreated: (id: string) => void;
+  onGoalCreationFailed: (errorMessage: string) => void;
 }
 
-export default function GoalForm({ onGoalCreated }: GoalFormProps) {
+export default function GoalForm({ onGoalCreated, onGoalCreationFailed }: GoalFormProps) {
   const [goal, setGoal] = useState({
     title: "",
     description: "",
@@ -54,7 +55,8 @@ export default function GoalForm({ onGoalCreated }: GoalFormProps) {
         // Handle successful goal creation
         console.log("Goal created successfully");
         setSuccessMessage("Goal created successfully!");
-        onGoalCreated();
+        const { id } = await response.json();
+        onGoalCreated(id);
         // Reset form fields
         setGoal({
           title: "",
@@ -66,9 +68,15 @@ export default function GoalForm({ onGoalCreated }: GoalFormProps) {
         });
       } else {
         console.error("Failed to create goal");
+        onGoalCreationFailed("Failed to create goal");
       }
     } catch (error) {
       console.error("An error occurred", error);
+      if (error instanceof Error) {
+        onGoalCreationFailed(error.message);
+      } else {
+        onGoalCreationFailed("An unknown error occurred");
+      }
     }
   };
 
