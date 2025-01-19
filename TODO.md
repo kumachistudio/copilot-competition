@@ -35,6 +35,12 @@ Let your own vision and understanding of new beginnings guide your solution!
 - [ ] Implement habit tracking functionality
 - [ ] Set up habits API routes
 
+## Habit Tracker Model
+- [ ] Define Habit model schema
+- [ ] Implement Habit model methods
+- [ ] Set up Habit model validation
+- [ ] Integrate Habit model with database
+
 ## Journal
 - [ ] Create JournalEntry component
 - [ ] Create JournalList component

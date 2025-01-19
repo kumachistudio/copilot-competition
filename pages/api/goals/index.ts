@@ -1,18 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/lib/prisma"; // Adjust the import path as necessary
-import { getSession } from "next-auth/react";
-import { Session, DefaultSession } from "next-auth";
-
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-    } & DefaultSession["user"];
-  }
-}
+import { getServerSession } from "next-auth";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "@/lib/prisma"; // Adjust the import according to your project structure
+import { authOptions } from "@/lib/authOptions"; // Adjust the import path as necessary
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
     return res.status(401).json({ message: "Not authenticated" });
@@ -25,53 +17,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === "POST") {
-    const { title, description, category, startDate, endDate, priority, status, progress, visibility, milestones, reminders, tags, attachments } = req.body;
+    const { title, description, startDate, endDate, priority, status } = req.body;
+    
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
+
+    if (parsedStartDate > parsedEndDate) {
+      return res.status(400).json({ message: "Start date cannot be later than end date" });
+    }
 
     try {
+      console.log("Creating goal with data:", { title, description, startDate, endDate, priority, status, userId });
       const goal = await prisma.goal.create({
         data: {
           title,
           description,
-          category,
-          startDate: new Date(startDate),
-          endDate: new Date(endDate),
+          startDate: parsedStartDate,
+          endDate: parsedEndDate,
           priority,
           status,
-          progress,
-          visibility,
-          user: {
-            connect: { id: Number(userId) },
-          },
-          milestones: {
-            create: milestones.map((milestone: string) => ({ name: milestone })),
-          },
-          reminders: {
-            create: reminders.map((reminder: string) => ({ time: new Date(reminder) })),
-          },
-          tags: {
-            create: tags.map((tag: string) => ({ name: tag })),
-          },
-          attachments: {
-            create: attachments.map((attachment: string) => ({ url: attachment })),
-          },
+          userId: parseInt(userId, 10),
         },
       });
-
-      res.status(201).json(goal);
+      console.log("Goal created successfully:", goal);
+      return res.status(201).json(goal);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
-    }
-  } else if (req.method === "GET") {
-    try {
-      const goals = await prisma.goal.findMany({
-        where: { userId: Number(userId) },
-      });
-
-      res.status(200).json(goals);
-    } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Error creating goal:", error);
+      return res.status(500).json({ message: "Internal server error" });
     }
   } else {
-    res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ message: "Method not allowed" });
   }
 }
